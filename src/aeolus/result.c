@@ -17,6 +17,24 @@ Err _res_get_try_err() {
 }
 
 
+static void (*_errdbg_pre_hook)(void) = NULL;
+static void (*_errdbg_post_hook)(void) = NULL;
+
+void set_errdbg_hooks(void (*pre)(void), void (*post)(void)) {
+    _errdbg_pre_hook = pre;
+    _errdbg_post_hook = post;
+}
+
+void errdbg(const char *msg, Err err, const char *filename, int linenumber) {
+#ifndef NDEBUG
+    if (_errdbg_pre_hook) _errdbg_pre_hook();
+    fprintf(stderr, "[errdbg] %s:%d\t %s: %s\n\r", filename, linenumber, msg, err);
+    if (_errdbg_post_hook) _errdbg_post_hook();
+#else
+    (void)msg; (void)err; (void)filename; (void)linenumber;
+#endif
+}
+
 static void (*_die_hook)(void) = NULL;
 
 void set_die_hook(void (*hook)(void)) {

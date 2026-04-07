@@ -31,8 +31,16 @@ void _abortHandler() {
     write(STDOUT_FILENO, "\r\n", 2);
 }
 
-void editor_die_hook() {
+static void editor_die_hook() {
     WRITE_SEQ(LEAVE_ALTERNATE_SCREEN);
+}
+
+static void errdbg_pre_hook() {
+    WRITE_SEQ(LEAVE_ALTERNATE_SCREEN);
+}
+
+static void errdbg_post_hook() {
+    WRITE_SEQ(ENTER_ALTERNATE_SCREEN);
 }
 
 void editorInit(Editor* ed) {
@@ -41,6 +49,7 @@ void editorInit(Editor* ed) {
     WRITE_SEQ(ENTER_ALTERNATE_SCREEN);
 
     set_die_hook(editor_die_hook);
+    set_errdbg_hooks(errdbg_pre_hook, errdbg_post_hook);
     errdie(void, terminalInit(), "init: terminal init failed");
 
     atexit(terminalDeinit);
@@ -117,13 +126,4 @@ void editorRun() {
         editorRefreshScreen();
         editorProcessKeypress();
     }
-}
-
-
-void pre_errdbg() {
-    WRITE_SEQ(LEAVE_ALTERNATE_SCREEN);
-}
-
-void post_errdbg() {
-    WRITE_SEQ(ENTER_ALTERNATE_SCREEN);
 }

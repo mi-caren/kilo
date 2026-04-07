@@ -23,28 +23,8 @@ typedef const char* Err;
 
 #define RES_OK 0
 
-#ifdef NDEBUG
-    #define errdbg(MSG, ERR, FILENAME, LINENUMBER)
-#else
-    #ifdef PRE_ERRDBG
-        void pre_errdbg();
-        #define _PRE_ERRDBG pre_errdbg();
-    #else
-        #define _PRE_ERRDBG
-    #endif
-
-    #ifdef POST_ERRDBG
-        void post_errdbg();
-        #define _POST_ERRDBG post_errdbg();
-    #else
-        #define _POST_ERRDBG
-    #endif
-
-    #define errdbg(MSG, ERR, FILENAME, LINENUMBER)\
-        _PRE_ERRDBG\
-        fprintf(stderr, "[errdbg] %s:%d\t %s: %s\n\r", FILENAME, LINENUMBER, MSG, ERR);\
-        _POST_ERRDBG
-#endif
+void set_errdbg_hooks(void (*pre)(void), void (*post)(void));
+void errdbg(const char *msg, Err err, const char *filename, int linenumber);
 
 /* ********* OK *********** */
 #define ok(TYPE, ...)\
@@ -59,7 +39,7 @@ typedef const char* Err;
 #define ERR_FUNC_SIGNATURE(TYPE)     Res(TYPE) ERR_FUNC_NAME(TYPE)(Err err, const char* filename, int linenumber)
 #define ERR_FUNC_IMPL(TYPE) \
     ERR_FUNC_SIGNATURE(TYPE) { \
-        errdbg("error", err, filename, linenumber)\
+        errdbg("error", err, filename, linenumber);\
         return (Res(TYPE)) {\
             .err = err,\
         };\
@@ -99,24 +79,17 @@ void die(const char *msg);
 #define try(TYPE, EXPR) \
     TRY_FUNC_NAME(TYPE)(EXPR); \
     if (_res_get_try_err()) {\
-        errdbg("  try", _res_get_try_err(), __FILE__, __LINE__)\
+        errdbg("  try", _res_get_try_err(), __FILE__, __LINE__);\
         return (Res(TYPE)) {\
             .err = _res_get_try_err(),\
         };\
     }
 
-#ifdef NDEBUG
-    #define catch_errdbg(ERR)
-#else
-    #define catch_errdbg(ERR)\
-        if (ERR)\
-            errdbg("catch", ERR, __FILE__, __LINE__);
-#endif
 /* ********* CATCH *********** */
 #define catch(TYPE, EXPR, ERR) \
     TRY_FUNC_NAME(TYPE)(EXPR); \
     Err ERR = _res_get_try_err();\
-    catch_errdbg(ERR)\
+    if (ERR) errdbg("catch", ERR, __FILE__, __LINE__);\
     if (ERR)
 
 #define is_ok(RES)                   (RES.err == NULL)
