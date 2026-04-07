@@ -115,7 +115,7 @@ insert_newline_error:
 }
 
 void cmdInsertChar(char c) {
-    EditingPoint ep = unwrap(EditingPoint, _coreInsertChar(c, editor.editing_point));
+    EditingPoint ep = errdie(EditingPoint, _coreInsertChar(c, editor.editing_point), "insert: insert char failed");
 
     /* Rimuovere la logica per aggiustare l'indentazione
        da dentro _coreInsertNewline. Questa funzione non deve fare altro
@@ -147,7 +147,7 @@ void cmdPaste() {
     Command cmd = vec_new(CoreCommand);
 
     for (EACH(c, editor.copy_buf)) {
-        EditingPoint ep = unwrap(EditingPoint, _coreInsertChar(*c, editor.editing_point));
+        EditingPoint ep = errdie(EditingPoint, _coreInsertChar(*c, editor.editing_point), "paste: insert char failed");
 
         // Insert every CoreCommand into the Editor Command
         CoreCommand ccmd = {
@@ -250,10 +250,10 @@ bool cmdUndo() {
     for (EACH_REV(ccmd, *cmd)) {
         switch (ccmd->type) {
             case CCMD_INSERT_CHAR:
-                unwrap(char, _coreDeleteChar(ccmd->ep));
+                errdie(char, _coreDeleteChar(ccmd->ep), "undo: delete char failed");
                 break;
             case CCMD_DELETE_CHAR:
-                unwrap(EditingPoint, _coreInsertChar(ccmd->c, ccmd->ep));
+                errdie(EditingPoint, _coreInsertChar(ccmd->c, ccmd->ep), "undo: insert char failed");
                 break;
         }
     }

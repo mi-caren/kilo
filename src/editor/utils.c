@@ -108,7 +108,7 @@ int editorReadKey() {
 
     while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
         if (nread == -1 && errno != EAGAIN)
-            die("editor/editor_read_key/read");
+            die("read key: read failed");
     }
 
     if (c == '\x1b') {

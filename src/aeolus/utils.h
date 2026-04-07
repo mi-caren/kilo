@@ -32,7 +32,6 @@
 #define IF_0(A, B)                          B
 
 
-void atPanic(void (*beforePanicCallback) ());
 
 unsigned int umin(unsigned int a, unsigned int b);
 unsigned int umax(unsigned int a, unsigned int b);

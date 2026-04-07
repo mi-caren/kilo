@@ -31,7 +31,7 @@ void _abortHandler() {
     write(STDOUT_FILENO, "\r\n", 2);
 }
 
-void atPanicCallback() {
+void editor_die_hook() {
     WRITE_SEQ(LEAVE_ALTERNATE_SCREEN);
 }
 
@@ -40,8 +40,8 @@ void editorInit(Editor* ed) {
     // because terminalInit function can mess the terminal by moving the cursor
     WRITE_SEQ(ENTER_ALTERNATE_SCREEN);
 
-    if (is_err(terminalInit()))
-        die("Unable to initialize terminal");
+    set_die_hook(editor_die_hook);
+    errdie(void, terminalInit(), "init: terminal init failed");
 
     atexit(terminalDeinit);
 
@@ -74,21 +74,21 @@ void editorInit(Editor* ed) {
     ed->view_rows = height - 2;
 }
 
-int editorOpen(char *filename) {
+Res(void) editorOpen(char *filename) {
     free(editor.filename);
     char *new = strdup(filename);
     if (new == NULL)
-        return -1;
+        return err(void, "strdup");
     editor.filename = new;
 
     FILE *fp = fopen(filename, "r");
     if (!fp)
-        return -1;
+        return err(void, strerror(errno));
 
     char *line = NULL;
     size_t linecap = 0;
     ssize_t linelen;
-    int retval = 0;
+    Err open_err = NULL;
     while((linelen = getline(&line, &linecap, fp)) != -1) {
         // strip off newline or carriage retur at the end of line
         while (linelen > 0 && (line[linelen - 1] == '\n' ||
@@ -97,7 +97,7 @@ int editorOpen(char *filename) {
         }
 
         if (editorInsertRow(editor.rows->len, line) != 0) {
-            retval = -1;
+            open_err = "insert row";
             goto cleanup;
         }
     }
@@ -105,7 +105,10 @@ int editorOpen(char *filename) {
 cleanup:
     free(line);
     fclose(fp);
-    return retval;
+    if (open_err)
+        return err(void, open_err);
+    else
+        return ok(void);
 }
 
 void editorRun() {
@@ -116,18 +119,6 @@ void editorRun() {
     }
 }
 
-/*
- * Print error message and exit with 1
- */
-void die(const char *s) {
-    WRITE_SEQ(LEAVE_ALTERNATE_SCREEN);
-    if (errno) {
-        perror(s);
-    } else {
-        fprintf(stderr, "%s\n\r", s);
-    }
-    exit(EXIT_FAILURE);
-}
 
 void pre_errdbg() {
     WRITE_SEQ(LEAVE_ALTERNATE_SCREEN);

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "aeolus/result.h"
 #include "editor.h"
 #include "editor/defs.h"
 
@@ -11,9 +12,7 @@ int main(int argc, char *argv[]) {
     editorInit(&editor);
 
     if (argc >= 2) {
-        if (editorOpen(argv[1]) != 0) {
-            die("Error while opening file");
-        };
+        errdie(void, editorOpen(argv[1]), "open: open file failed");
     }
 
     editorRun();

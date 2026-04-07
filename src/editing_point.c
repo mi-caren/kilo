@@ -201,7 +201,7 @@ void editingPointMove(enum EditorKey key) {
             editingPointMoveToWord(editorKeyToDirection(key));
             break;
         default:
-            die("editing_point/editingPointMove");
+            die("editing point: unexpected key");
             break;
     }
 }

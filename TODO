@@ -133,4 +133,9 @@ PROBLEMA -> * creare un editor key NO_OP, in caso non venga riconosciuta una esc
 di String e in cui passo &row->chars come argomento. Creare una varibile `String* chars = &row->chars` e usare quella per
 rendere il codice più leggibile
 
-* valutare se ritornare vec_new direttamente un Vec invece che un puntatore 
+* valutare se ritornare vec_new direttamente un Vec invece che un puntatore
+
+* controllare tutti gli errdie se possono essere sostituiti e magari invece che morire
+    l'editor mostri un errore nella status bar
+
+* aggiornare il pre_errdbg e usare un hook come già faccio con il pre_die_hook
