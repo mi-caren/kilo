@@ -38,19 +38,14 @@
         void       (*free)          (Vec(TYPE)* self);\
     }
 
-/* ********* vec_new *********** */
-#define VEC_NEW_FUNC_NAME(TYPE)         CAT(Vec(TYPE), _new)
-#define VEC_NEW_FUNC_SIGNATURE(TYPE)    Vec(TYPE)* VEC_NEW_FUNC_NAME(TYPE)(size_t initial_size)
-#define VEC_NEW_FUNC_IMPL(TYPE)\
-    VEC_NEW_FUNC_SIGNATURE(TYPE) {\
-        Vec(TYPE)* vec = malloc(sizeof(Vec(TYPE)));\
-        if (vec == NULL) return NULL;\
+/* ********* vec_init *********** */
+#define VEC_INIT_FUNC_NAME(TYPE)        CAT(Vec(TYPE), _init)
+#define VEC_INIT_FUNC_SIGNATURE(TYPE)   Vec(TYPE)* VEC_INIT_FUNC_NAME(TYPE)(Vec(TYPE)* vec, size_t initial_size)
+#define VEC_INIT_FUNC_IMPL(TYPE)\
+    VEC_INIT_FUNC_SIGNATURE(TYPE) {\
         size_t cap = vec_cap_from_size(initial_size);\
         TYPE* items = malloc(sizeof(TYPE) * cap);\
-        if (items == NULL) {\
-            free(vec);\
-            return NULL;\
-        }\
+        if (items == NULL) return NULL;\
         vec->cap = cap;\
         vec->len = 0;\
         vec->curr = 0;\
@@ -70,6 +65,22 @@
         };\
         vec->drv = &vec_driver;\
         ITER_INIT(Vec(TYPE), vec);\
+        return vec;\
+    }
+
+#define vec_init(SELF, SIZE)            VEC_INIT_FUNC_NAME(typeof(*SELF))(SELF, SIZE)
+
+/* ********* vec_new *********** */
+#define VEC_NEW_FUNC_NAME(TYPE)         CAT(Vec(TYPE), _new)
+#define VEC_NEW_FUNC_SIGNATURE(TYPE)    Vec(TYPE)* VEC_NEW_FUNC_NAME(TYPE)(size_t initial_size)
+#define VEC_NEW_FUNC_IMPL(TYPE)\
+    VEC_NEW_FUNC_SIGNATURE(TYPE) {\
+        Vec(TYPE)* vec = malloc(sizeof(Vec(TYPE)));\
+        if (vec == NULL) return NULL;\
+        if (VEC_INIT_FUNC_NAME(TYPE)(vec, initial_size) == NULL) {\
+            free(vec);\
+            return NULL;\
+        }\
         return vec;\
     }
 
@@ -268,6 +279,7 @@
     /* struct Iterator(Vec(TYPE)); */\
     VEC_STRUCT_DEF(TYPE);\
     VEC_DRIVER_DEF(TYPE);\
+    VEC_INIT_FUNC_SIGNATURE(TYPE);\
     VEC_NEW_FUNC_SIGNATURE(TYPE);\
     ITER_DEFS(Vec(TYPE), TYPE)\
 
@@ -311,6 +323,7 @@
             return iter_curr(self);\
         }\
     )\
+    VEC_INIT_FUNC_IMPL(TYPE)\
     VEC_NEW_FUNC_IMPL(TYPE)\
     static VEC_REALLOC_FUNC_IMPL(TYPE)\
 
