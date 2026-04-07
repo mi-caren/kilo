@@ -27,8 +27,6 @@
     };\
     (IT)->iter = &CAT(Iterator(ITERABLE), _iter)
 
-#define ITER_GET_DRIVER()
-
 /* ********* iter_curr *********** */
 #define ITER_CURR_FUNC_NAME(ITERABLE)      CAT(Iterator(ITERABLE), _curr)
 #define ITER_CURR_FUNC_SIGNATURE(ITERABLE) IterItem(ITERABLE)* ITER_CURR_FUNC_NAME(ITERABLE)(ITERABLE* const self)

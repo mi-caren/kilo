@@ -34,7 +34,6 @@ void errdbg(const char *msg, Err err, const char *filename, int linenumber);
     }
 
 /* ********* ERR *********** */
-/* ********* UNWRAP *********** */
 #define ERR_FUNC_NAME(TYPE)          CAT(Res(TYPE), _err)
 #define ERR_FUNC_SIGNATURE(TYPE)     Res(TYPE) ERR_FUNC_NAME(TYPE)(Err err, const char* filename, int linenumber)
 #define ERR_FUNC_IMPL(TYPE) \
@@ -101,12 +100,10 @@ Err _res_get_try_err();
 #define RESULT_DEFS(TYPE)\
     RESULT_STRUCT_DEF(TYPE);\
     ERR_FUNC_SIGNATURE(TYPE);\
-    /* RES_PANIC_FUNC_SIGNATURE(TYPE); */\
     ERRDIE_FUNC_SIGNATURE(TYPE);\
     TRY_FUNC_SIGNATURE(TYPE);\
 
 #define RESULT_IMPL(TYPE)\
-    /* RES_PANIC_FUNC_IMPL(TYPE) */\
     ERR_FUNC_IMPL(TYPE)\
     ERRDIE_FUNC_IMPL(TYPE)\
     TRY_FUNC_IMPL(TYPE)\
