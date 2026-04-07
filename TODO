@@ -139,3 +139,7 @@ rendere il codice più leggibile
     l'editor mostri un errore nella status bar
 
 * aggiornare il pre_errdbg e usare un hook come già faccio con il pre_die_hook
+
+* le funzioni di vec che non modificano il contenuto di vec dovrebbero accehttare il vec come const
+
+* check se i linguaggi moderni in vec_last ritornano un puntatore o un valore

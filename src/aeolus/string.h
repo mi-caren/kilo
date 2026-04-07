@@ -10,7 +10,7 @@
 // struct Iterator(String);
 
 typedef struct {
-    Vec(char)* vec;
+    Vec(char) vec;
     ITER_DRIVER(String);
 } String;
 

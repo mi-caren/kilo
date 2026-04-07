@@ -68,7 +68,8 @@
         return vec;\
     }
 
-#define vec_init(SELF, SIZE)            VEC_INIT_FUNC_NAME(typeof(*SELF))(SELF, SIZE)
+#define vec_init(TYPE, SELF)                VEC_INIT_FUNC_NAME(TYPE)(SELF, 1)
+#define vec_init_with_cap(TYPE, SELF, CAP)  VEC_INIT_FUNC_NAME(TYPE)(SELF, CAP)
 
 /* ********* vec_new *********** */
 #define VEC_NEW_FUNC_NAME(TYPE)         CAT(Vec(TYPE), _new)
@@ -272,6 +273,10 @@
     }
 
 #define vec_free(SELF)                (SELF)->drv->free(SELF)
+
+/* ********* vec_deinit *********** */
+/* Frees the items array only. Use for stack-allocated vecs (via vec_init). */
+#define vec_deinit(SELF) do { free((SELF)->items); } while(0)
 
 
 #define VEC_DEFS(TYPE)\

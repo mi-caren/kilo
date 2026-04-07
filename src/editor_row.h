@@ -27,11 +27,11 @@ VEC_DEFS(Highlight)
 
 typedef struct {
     String chars;
-    Vec(Highlight)* hl;
+    Vec(Highlight) hl;
 
     String render;
 
-    Vec(unsigned int)* search_match_pos;
+    Vec(unsigned int) search_match_pos;
 } EditorRow;
 
 VEC_DEFS(EditorRow)

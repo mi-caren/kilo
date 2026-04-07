@@ -39,7 +39,7 @@ static void _historyPushCmd(Command cmd);
 
 
 static Res(EditingPoint) _coreInsertChar(char c, EditingPoint ep) {
-    if (editor.rows->len == 0) {
+    if (editor.rows.len == 0) {
         if (editorInsertRow(0, "") == -1)
             return err(EditingPoint, ECMD_INSERT_ROW);
     }
@@ -54,10 +54,10 @@ static Res(EditingPoint) _coreInsertChar(char c, EditingPoint ep) {
 }
 
 static Res(char) _coreDeleteChar(EditingPoint ep) {
-    if (editor.rows->len == 0)
+    if (editor.rows.len == 0)
         return err(char, ECMD_NO_ROWS);
 
-    if (getRow(ep) >= editor.rows->len || getCol(ep) > str_len(&ROW_AT(ep)->chars))
+    if (getRow(ep) >= editor.rows.len || getCol(ep) > str_len(&ROW_AT(ep)->chars))
         return err(char, ECMD_INVALID_EP);
 
     if (getCol(ep) == str_len(&ROW_AT(ep)->chars)) {
@@ -139,14 +139,14 @@ void cmdInsertChar(char c) {
 }
 
 void cmdPaste() {
-    if (editor.copy_buf == NULL) {
+    if (editor.copy_buf.len == 0) {
         messageBarSet("Nothing to copy. Copy buffer empty!");
         return;
     };
 
     Command cmd = vec_new(CoreCommand);
 
-    for (EACH(c, editor.copy_buf)) {
+    for (EACH(c, &editor.copy_buf)) {
         EditingPoint ep = errdie(EditingPoint, _coreInsertChar(*c, editor.editing_point), "paste: insert char failed");
 
         // Insert every CoreCommand into the Editor Command
@@ -224,8 +224,8 @@ void cmdDelete(bool del_key) {
 }
 
 static void _historyFreeTrailingCmds() {
-    while (editor.curr_history_cmd != vec_last(editor.command_history)) {
-        Command* cmd = vec_pop(editor.command_history);
+    while (editor.curr_history_cmd != vec_last(&editor.command_history)) {
+        Command* cmd = vec_pop(&editor.command_history);
         vec_free(*cmd);
     }
 }
@@ -233,8 +233,8 @@ static void _historyFreeTrailingCmds() {
 static void _historyPushCmd(Command cmd) {
     assert(cmd != NULL);
     _historyFreeTrailingCmds();
-    vec_push(editor.command_history, cmd);
-    editor.curr_history_cmd = iter_end(editor.command_history);
+    vec_push(&editor.command_history, cmd);
+    editor.curr_history_cmd = iter_end(&editor.command_history);
 }
 
 bool cmdUndo() {
@@ -260,7 +260,7 @@ bool cmdUndo() {
     CoreCommand* ccmd = vec_first(*cmd);
     editor.editing_point = ccmd->ep;
 
-    editor.curr_history_cmd = iter_prev(editor.command_history);
+    editor.curr_history_cmd = iter_prev(&editor.command_history);
     editorSetDirty();
     return true;
 }
@@ -379,22 +379,18 @@ inline bool cmdSearchPrev() {
 bool cmdCopy() {
     int err = 0;
     if (editor.selecting) {
-        if (editor.copy_buf == NULL) {
-            if (!(editor.copy_buf = vec_new(char))) goto copy_error;
-        }
-
-        vec_empty(editor.copy_buf);
+        vec_empty(&editor.copy_buf);
 
         EditingPoint ep = SELECTION_START;
         while (ep != SELECTION_END) {
             if (CHAR_AT(ep) == '\0') {
                 char c = '\r';
-                if (!vec_push(editor.copy_buf, c)) goto copy_error;
+                if (!vec_push(&editor.copy_buf, c)) goto copy_error;
             } else {
-                if (!vec_push(editor.copy_buf, CHAR_AT(ep))) goto copy_error;
+                if (!vec_push(&editor.copy_buf, CHAR_AT(ep))) goto copy_error;
             }
 
-            if (getCol(ep) == str_len(&vec_get(editor.rows, getRow(ep))->chars)) {
+            if (getCol(ep) == str_len(&vec_get(&editor.rows, getRow(ep))->chars)) {
                 incRow(&ep);
                 setCol(&ep, 0);
             } else {

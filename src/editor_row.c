@@ -23,15 +23,15 @@ extern struct Editor editor;
 
 
 inline EditorRow* editorRowGet(EditingPoint ep) {
-    return vec_get(editor.rows, getRow(ep));
+    return vec_get(&editor.rows, getRow(ep));
 }
 
 static void _editorRowResetHighlight(EditorRow* row) {
     if (str_len(&row->chars) == 0)
         return;
 
-    vec_empty(row->hl);
-    vec_repeat_append(row->hl, HL_NORMAL, str_len(&row->chars));
+    vec_empty(&row->hl);
+    vec_repeat_append(&row->hl, HL_NORMAL, str_len(&row->chars));
 }
 
 static bool isSeparator(char c) {
@@ -65,7 +65,7 @@ const char* C_TYPES[] = {
 
 static void _highlightFill(EditorRow* row, size_t* i, Highlight val, size_t count) {
     for (size_t k = 0; k < count; k++) {
-        row->hl->items[*i] = val;
+        row->hl.items[*i] = val;
         (*i)++;
     }
     (*i)--;
@@ -80,8 +80,8 @@ void editorRowHighlightSyntax(unsigned int filerow) {
     char* multiline_comment_start = "/*";
     char* multiline_comment_end = "*/";
 
-    EditorRow* row = vec_get(editor.rows, filerow);
-    Highlight* hl = row->hl->items;
+    EditorRow* row = vec_get(&editor.rows, filerow);
+    Highlight* hl = row->hl.items;
 
     for (EACH(c, &row->chars)) {
         size_t i = str_curri(&row->chars);
@@ -223,10 +223,10 @@ void editorRowHighlightSyntax(unsigned int filerow) {
 void editorRowHighlightSearchResults(EditorRow* row) {
     if (editor.search_query == NULL) return;
 
-    for (EACH(pos, row->search_match_pos)) {
+    for (EACH(pos, &row->search_match_pos)) {
         unsigned int last_pos = *pos + strlen(editor.search_query);
         for (unsigned int j = *pos; j < last_pos; j++) {
-            row->hl->items[j] = HL_MATCH;
+            row->hl.items[j] = HL_MATCH;
         }
     }
 }
@@ -235,8 +235,8 @@ void editorRowHighlightSelection(unsigned int filerow) {
     if (!editor.selecting) return;
 
     static bool in_selection = false;
-    EditorRow* row = vec_get(editor.rows, filerow);
-    Highlight* hl = row->hl->items;
+    EditorRow* row = vec_get(&editor.rows, filerow);
+    Highlight* hl = row->hl.items;
 
     if (filerow == editor.rowoff && SELECTION_START < editingPointNew(editor.rowoff, 0))
         in_selection = true;
@@ -285,7 +285,7 @@ int syntaxToColor(Highlight hl) {
 }
 
 int editorRowRender(unsigned int filerow) {
-    EditorRow* row = vec_get(editor.rows, filerow);
+    EditorRow* row = vec_get(&editor.rows, filerow);
 
     _editorRowResetHighlight(row);
     editorRowHighlightSyntax(filerow);
@@ -298,7 +298,7 @@ int editorRowRender(unsigned int filerow) {
 
     int prev_color = -1;
     for (EACH(c, &row->chars)) {
-        int color = syntaxToColor(row->hl->items[str_curri(&row->chars)]);
+        int color = syntaxToColor(row->hl.items[str_curri(&row->chars)]);
         int fg = (color >> 8) & 0xff;
         int bg = color & 0xff;
         if (color != prev_color) {
@@ -338,8 +338,8 @@ void editorRowDeleteChar(EditorRow* row, unsigned int pos) {
 void editorRowFree(EditorRow* row) {
     str_free(&row->chars);
     str_free(&row->render);
-    vec_free(row->hl);
-    vec_free(row->search_match_pos);
+    vec_deinit(&row->hl);
+    vec_deinit(&row->search_match_pos);
 }
 
 VEC_IMPL(Highlight)

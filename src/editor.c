@@ -56,7 +56,7 @@ void editorInit(Editor* ed) {
 
     ed->editing_point = (EditingPoint) 0;
     ed->rx = 0;
-    ed->rows = vec_new(EditorRow);
+    vec_init(EditorRow, &ed->rows);
     ed->rowoff = 0;
     ed->coloff = 0;
     ed->filename = NULL;
@@ -69,9 +69,9 @@ void editorInit(Editor* ed) {
 
     ed->selecting = false;
     ed->selection_start = 0;
-    ed->copy_buf = NULL;
+    vec_init(char, &ed->copy_buf);
 
-    ed->command_history = vec_new(Command);
+    vec_init(Command, &ed->command_history);
     ed->curr_history_cmd = NULL;
 
     int height = terminal.screenrows;
@@ -105,7 +105,7 @@ Res(void) editorOpen(char *filename) {
             line[--linelen] = '\0';
         }
 
-        if (editorInsertRow(editor.rows->len, line) != 0) {
+        if (editorInsertRow(editor.rows.len, line) != 0) {
             open_err = "insert row";
             goto cleanup;
         }
