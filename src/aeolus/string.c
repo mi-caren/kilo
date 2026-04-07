@@ -40,14 +40,14 @@ ITER_IMPL(
 )
 
 static void _str_push0(String* self) {
-    assert(vec_push(self->vec, '\0'));
+    vec_push(self->vec, '\0');
 }
 
 String str_new_with_cap(size_t initial_size) {
     if (initial_size < 2) initial_size = 2;
     Vec(char)* vec = vec_new_with_cap(char, initial_size);
     assert(vec != NULL);
-    assert(vec_push(vec, '\0'));
+    vec_push(vec, '\0');
     String str;
     str.vec = vec;
     ITER_INIT(String, &str);
@@ -61,10 +61,10 @@ String str_new() {
 String str_from(char *chars) {
     size_t len = strlen(chars);
     String str = str_new_with_cap(len + 1);
-    assert(vec_pop(str.vec));
+    vec_pop(str.vec);
     // TODO: create vec_from
     for (size_t i = 0; i < len; i ++)
-        assert(vec_push(str.vec, chars[i]));
+        vec_push(str.vec, chars[i]);
     _str_push0(&str);
     return str;
 }
@@ -92,7 +92,7 @@ String* str_insert(String* self, char* chars, size_t pos) {
     if (pos > str_len(self)) return NULL;
     // TODO: vec_insert_array
     for (size_t i = 0; i < strlen(chars); i++)
-        assert(vec_insert(self->vec, chars[i], pos+i));
+        vec_insert(self->vec, chars[i], pos+i);
     return self;
 }
 
@@ -100,14 +100,14 @@ String* str_append(String* self, char* chars) {
     // TODO: vec_append
     vec_pop(self->vec);
     for (size_t i = 0; i < strlen(chars); i++)
-        assert(vec_push(self->vec, chars[i]));
+        vec_push(self->vec, chars[i]);
     _str_push0(self);
     return self;
 }
 
 String* str_appendc(String* self, char c) {
     vec_pop(self->vec);
-    assert(vec_push(self->vec, c));
+    vec_push(self->vec, c);
     _str_push0(self);
     return self;
 }
@@ -115,7 +115,7 @@ String* str_appendc(String* self, char c) {
 String* str_appends(String*self, String* str) {
     vec_pop(self->vec);
     for (size_t i = 0; i < str_len(str); i++)
-        assert(vec_push(self->vec, str->vec->items[i]));
+        vec_push(self->vec, str->vec->items[i]);
     _str_push0(self);
     return self;
 }
