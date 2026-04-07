@@ -233,6 +233,8 @@
 #define vec_first(SELF)                (SELF)->drv->first(SELF)
 
 /* ********* vec_pop *********** */
+/* Returns a pointer to the popped element. The pointer is valid only
+ * until the next mutation (push, insert, pop) of the vec. */
 #define VEC_POP_FUNC_NAME(TYPE)           CAT(Vec(TYPE), _pop)
 #define VEC_POP_FUNC_SIGNATURE(TYPE)      TYPE* VEC_POP_FUNC_NAME(TYPE)(Vec(TYPE)* self)
 #define VEC_POP_FUNC_IMPL(TYPE)\
@@ -240,7 +242,9 @@
         if (self->len == 0) return NULL;\
         TYPE* el = vec_last_fn(TYPE, self);\
         self->len--;\
-        if (self->curr >= self->len)\
+        if (self->len == 0)\
+            self->curr = 0;\
+        else if (self->curr >= self->len)\
             self->curr = self->len - 1;\
         return el;\
     }
