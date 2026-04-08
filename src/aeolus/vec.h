@@ -1,3 +1,15 @@
+/* Vec — generic dynamic array.
+ *
+ * Vecs can be stack-allocated (vec_init/vec_deinit) or heap-allocated
+ * (vec_new/vec_free).
+ *
+ * Pushing a stack-allocated vec into another vec creates a shallow copy:
+ * both copies share the same items array but have independent
+ * len/cap/curr fields. Mutating the original after the push will desync
+ * the metadata, and a realloc can leave the copy with a dangling items
+ * pointer. Pushing a heap-allocated vec (pointer) avoids this because
+ * only the pointer is copied — there is always a single vec struct. */
+
 #ifndef VEC_H
 #define VEC_H
 

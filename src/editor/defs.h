@@ -38,6 +38,12 @@
 #define COLOR_SEQ_SIZE 10
 #define TAB_SPACE_NUM    4
 
+/* Command is heap-allocated (pointer) because it is pushed into
+ * command_history by copying. If Command were a value, pushing would
+ * create a shallow copy: both copies share the same items array,
+ * but have independent len/cap/curr fields. Mutating the original
+ * after the push would desync these fields, and a realloc (from
+ * vec_push) would leave the history copy with a dangling items pointer. */
 typedef Vec(CoreCommand)* Command;
 VEC_DEFS(Command)
 
