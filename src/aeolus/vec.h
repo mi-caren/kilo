@@ -108,7 +108,8 @@
         self->len = 0;\
     }
 
-#define vec_empty(SELF)     (SELF)->drv->empty(SELF)
+#define vec_empty(SELF)             (SELF)->drv->empty(SELF)
+#define vec_empty_fn(TYPE, SELF)     VEC_EMPTY_FUNC_NAME(TYPE)(SELF)
 
 /* ********* vec_push *********** */
 #define VEC_PUSH_FUNC_NAME(TYPE)            CAT(Vec(TYPE), _push)
@@ -125,6 +126,7 @@
     }
 
 #define vec_push(SELF, EL)             (SELF)->drv->push(SELF, EL)
+#define vec_push_fn(TYPE, SELF, EL)     VEC_PUSH_FUNC_NAME(TYPE)(SELF, EL)
 
 /* ********* static vec_grow *********** */
 #define vec_grow_fn(TYPE, VEC)                 vec_realloc_fn(TYPE, VEC, VEC->cap * 2)
@@ -147,7 +149,8 @@
         return self;\
     }
 
-#define vec_repeat_append(SELF, EL, N)       (SELF)->drv->repeat_append(SELF, EL, N)
+#define vec_repeat_append(SELF, EL, N)              (SELF)->drv->repeat_append(SELF, EL, N)
+#define vec_repeat_append_fn(TYPE, SELF, EL, N)      VEC_REPEAT_APPEND_FUNC_NAME(TYPE)(SELF, EL, N)
 
 /* ********* static vec_make_space *********** */
 #define vec_make_space_fn(TYPE, VEC, SPACE)                 vec_realloc_fn(TYPE, VEC, vec_cap_from_size(SPACE))
@@ -180,7 +183,8 @@
         return &self->items[pos];\
     }
 
-#define vec_set(SELF, VAL, POS)        (SELF)->drv->set(SELF, VAL, POS)
+#define vec_set(SELF, VAL, POS)             (SELF)->drv->set(SELF, VAL, POS)
+#define vec_set_fn(TYPE, SELF, VAL, POS)     VEC_SET_FUNC_NAME(TYPE)(SELF, VAL, POS)
 
 /* ********* vec_get *********** */
 #define VEC_GET_FUNC_NAME(TYPE)            CAT(Vec(TYPE), _get)
@@ -191,7 +195,8 @@
         return &self->items[pos];\
     }
 
-#define vec_get(SELF, POS)        (SELF)->drv->get(SELF, POS)
+#define vec_get(SELF, POS)             (SELF)->drv->get(SELF, POS)
+#define vec_get_fn(TYPE, SELF, POS)     VEC_GET_FUNC_NAME(TYPE)(SELF, POS)
 
 /* ********* vec_insert *********** */
 #define VEC_INSERT_FUNC_NAME(TYPE)            CAT(Vec(TYPE), _insert)
@@ -214,7 +219,8 @@
         return self;\
     }
 
-#define vec_insert(SELF, EL, POS)             (SELF)->drv->insert(SELF, EL, POS)
+#define vec_insert(SELF, EL, POS)              (SELF)->drv->insert(SELF, EL, POS)
+#define vec_insert_fn(TYPE, SELF, EL, POS)      VEC_INSERT_FUNC_NAME(TYPE)(SELF, EL, POS)
 
 /* ********* vec_remove *********** */
 #define VEC_REMOVE_FUNC_NAME(TYPE)            CAT(Vec(TYPE), _remove)
@@ -231,7 +237,8 @@
         return self;\
     }
 
-#define vec_remove(SELF, POS)        (SELF)->drv->remove(SELF, POS)
+#define vec_remove(SELF, POS)             (SELF)->drv->remove(SELF, POS)
+#define vec_remove_fn(TYPE, SELF, POS)     VEC_REMOVE_FUNC_NAME(TYPE)(SELF, POS)
 
 /* ********* vec_last *********** */
 #define VEC_LAST_FUNC_NAME(TYPE)           CAT(Vec(TYPE), _last)
@@ -243,7 +250,7 @@
     }
 
 #define vec_last(SELF)                (SELF)->drv->last(SELF)
-#define vec_last_fn(TYPE, VEC)        VEC_LAST_FUNC_NAME(TYPE)(VEC)
+#define vec_last_fn(TYPE, SELF)        VEC_LAST_FUNC_NAME(TYPE)(SELF)
 
 /* ********* vec_first *********** */
 #define VEC_FIRST_FUNC_NAME(TYPE)           CAT(Vec(TYPE), _first)
@@ -255,6 +262,7 @@
     }
 
 #define vec_first(SELF)                (SELF)->drv->first(SELF)
+#define vec_first_fn(TYPE, SELF)        VEC_FIRST_FUNC_NAME(TYPE)(SELF)
 
 /* ********* vec_pop *********** */
 /* Returns a pointer to the popped element. The pointer is valid only
@@ -274,6 +282,7 @@
     }
 
 #define vec_pop(SELF)                (SELF)->drv->pop(SELF)
+#define vec_pop_fn(TYPE, SELF)        VEC_POP_FUNC_NAME(TYPE)(SELF)
 
 /* ********* vec_free *********** */
 #define VEC_FREE_FUNC_NAME(TYPE)           CAT(Vec(TYPE), _free)
@@ -285,6 +294,7 @@
     }
 
 #define vec_free(SELF)                (SELF)->drv->free(SELF)
+#define vec_free_fn(TYPE, SELF)        VEC_FREE_FUNC_NAME(TYPE)(SELF)
 
 /* ********* vec_deinit *********** */
 /* Frees the items array only. Use for stack-allocated vecs (via vec_init). */
