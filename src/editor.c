@@ -18,7 +18,7 @@
 #include "editor/utils.h"
 #include "terminal.h"
 #include "status_bar.h"
-#include "aeolus/vec.h"
+#include "aeolus/vec/vec.h"
 #include "aeolus/result.h"
 #include "aeolus/utils.h"
 

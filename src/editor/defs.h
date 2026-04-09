@@ -8,7 +8,7 @@
 #include "editor/commands.h"
 
 #include "editor_row.h"     // provides Vec(EditorRow)
-#include "aeolus/vec.h"
+#include "aeolus/vec/vec.h"
 
 #define LOKI_VERSION     "0.0.1"
 

@@ -22,7 +22,7 @@
 #include "aeolus/iterator.h"
 #include "aeolus/result.h"
 #include "aeolus/string.h"
-#include "aeolus/vec.h"
+#include "aeolus/vec/vec.h"
 #include "editor/commands.h"
 
 extern struct Editor editor;

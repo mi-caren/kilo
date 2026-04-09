@@ -15,7 +15,7 @@
 #include "status_bar.h"
 #include "terminal.h"
 #include "aeolus/string.h"
-#include "aeolus/vec.h"
+#include "aeolus/vec/vec.h"
 
 extern struct Editor editor;
 

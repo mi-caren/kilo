@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #include "aeolus/iterator.h"
-#include "vec.h"
+#include "vec/vec.h"
 
 // struct Iterator(String);
 

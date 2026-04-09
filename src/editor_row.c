@@ -11,7 +11,7 @@
 #include "editor/defs.h"
 #include "editor/utils.h"
 #include "aeolus/string.h"
-#include "aeolus/vec.h"
+#include "aeolus/vec/vec.h"
 #include "editor_row.h"
 #include "editor/utils.h"
 

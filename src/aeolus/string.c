@@ -5,7 +5,7 @@
 
 #include "aeolus/string.h"
 #include "aeolus/iterator.h"
-#include "aeolus/vec.h"
+#include "aeolus/vec/vec.h"
 
 
 // static String _strGrow(String* str);

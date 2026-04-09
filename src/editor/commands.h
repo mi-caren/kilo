@@ -8,7 +8,7 @@
 #include "editing_point.h"
 #include "editor/utils.h"
 #include "aeolus/result.h"
-#include "aeolus/vec.h"
+#include "aeolus/vec/vec.h"
 
 /* COMMANDS ERROR */
 #define ECMD_INSERT_ROW     "insert row error"

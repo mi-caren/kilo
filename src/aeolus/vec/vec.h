@@ -16,9 +16,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "utils.h"
-#include "generics.h"
-#include "iterator.h"
+#include "aeolus/utils.h"
+#include "aeolus/generics.h"
+#include "aeolus/iterator.h"
 
 #define Vec(TYPE) GenericName(TYPE, Vec)
 

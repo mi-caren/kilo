@@ -6,7 +6,7 @@
 #include "editing_point.h"
 #include "aeolus/string.h"
 #include "aeolus/string.h"
-#include "aeolus/vec.h"
+#include "aeolus/vec/vec.h"
 
 
 typedef enum {

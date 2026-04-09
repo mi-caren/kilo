@@ -13,8 +13,11 @@ EDITOR_OBJS = $(patsubst src/editor/%.c, build/editor_%.o, $(EDITOR_SRCS))
 OBJS = $(ROOT_OBJS) $(EDITOR_OBJS)
 
 # lib aeolus
-AEOLUS_SRCS = $(wildcard src/aeolus/*.c)
-AEOLUS_OBJS = $(patsubst src/aeolus/%.c, build/aeolus_%.o, $(AEOLUS_SRCS))
+AEOLUS_ROOT_SRCS = $(wildcard src/aeolus/*.c)
+AEOLUS_VEC_SRCS = $(wildcard src/aeolus/vec/*.c)
+AEOLUS_ROOT_OBJS = $(patsubst src/aeolus/%.c, build/aeolus_%.o, $(AEOLUS_ROOT_SRCS))
+AEOLUS_VEC_OBJS = $(patsubst src/aeolus/vec/%.c, build/aeolus_vec_%.o, $(AEOLUS_VEC_SRCS))
+AEOLUS_OBJS = $(AEOLUS_ROOT_OBJS) $(AEOLUS_VEC_OBJS)
 LIBS = build/libaeolus.a
 
 DEPS = $(OBJS:.o=.d) $(AEOLUS_OBJS:.o=.d)
@@ -44,6 +47,9 @@ build/editor_%.o: src/editor/%.c
 
 # ----- libaeolus -----
 build/aeolus_%.o: src/aeolus/%.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+build/aeolus_vec_%.o: src/aeolus/vec/%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 build/libaeolus.a: $(AEOLUS_OBJS)
