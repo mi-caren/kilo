@@ -1,9 +1,35 @@
+/* Iterator — generic iterator interface via function pointer tables.
+ *
+ * To make a type iterable:
+ *   1. Add ITER_DRIVER(MyType) as a field in the struct
+ *   2. Call ITER_DEFS(MyType, ItemType) in the header to declare types
+ *   3. Call ITER_IMPL(MyType, ...) in the .c file with bodies for
+ *      curr, begin, end, prev, next
+ *   4. Call ITER_INIT(MyType, instance) to assign the driver
+ *
+ * Usage:
+ *   for (EACH(item, &my_collection)) { ... }      // forward iteration
+ *   for (EACH_REV(item, &my_collection)) { ... }   // reverse iteration
+ *
+ * Iterator functions return pointers to elements (IterItem*), not
+ * copies. Returning by value would force a copy on every step, which
+ * is wasteful for large element types. It would also be dangerous
+ * for types that contain pointers to owned memory (like Vec or String):
+ * the copy would share the same backing memory as the original,
+ * and mutating or freeing either one would corrupt the other.
+ * With a pointer, the caller reads in place or copies explicitly.
+ *
+ * The iterator state (cursor) is stored on the collection itself,
+ * not on a separate iterator struct. This means nested iteration
+ * over the same collection is not supported. */
+
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
 #include "utils.h"
+#include "generics.h"
 
-#define Iterator(ITERABLE)          CAT(ITERABLE, Iterator)
+#define Iterator(ITERABLE)          GenericName(ITERABLE, Iterator)
 #define IterItem(ITERABLE)          CAT(Iterator(ITERABLE), Item)
 
 #define ITER_DRIVER_DEF(ITERABLE)\
