@@ -1,8 +1,8 @@
 include config.mk
 
 CPPFLAGS = -MMD -Isrc
-CFLAGS = -Wall -Wextra -pedantic --std=c23
-LDFLAGS = -L$(LIB_DIR) -laeolus
+CFLAGS = -Wall -Wextra -pedantic --std=c23 -ffunction-sections -fdata-sections
+LDFLAGS = -L$(LIB_DIR) -laeolus -Wl,--gc-sections 
 
 SRCS = $(wildcard src/*.c src/*/*.c)
 ROOT_SRCS = $(wildcard src/*.c)

@@ -1,4 +1,4 @@
-#include "aeolus/string.h"
+#include "aeolus/string/string.h"
 #include "aeolus/vec/vec.h"
 #include "editor/defs.h"
 #include "editor/utils.h"

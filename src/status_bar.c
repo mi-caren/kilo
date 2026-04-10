@@ -9,7 +9,7 @@
 #include "editor/defs.h"
 #include "terminal.h"
 #include "editor/utils.h"
-#include "aeolus/string.h"
+#include "aeolus/string/string.h"
 #include "aeolus/utils.h"
 
 #define PROMPT_CURSOR    "\033[5m_\033[0m"
