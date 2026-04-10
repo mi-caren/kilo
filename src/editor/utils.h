@@ -1,4 +1,4 @@
-#include "aeolus/string/string.h"
+#include "aeolus/string.h"
 
 
 void editorProcessKeypress();

@@ -6,10 +6,13 @@
 #ifndef STRING_H
 #define STRING_H
 
+extern const char _aeolus_variant_full;
+static __attribute__((used, retain)) const char* _aeolus_check_string = &_aeolus_variant_full;
+
 #include <bits/types/struct_iovec.h>
 
-#include "aeolus/iter/iter.h"
-#include "aeolus/vec/common.h"
+#include "aeolus/iter.h"
+#include "aeolus/shared/vec.h"
 
 typedef struct {
     VEC_STRUCT_BASE(char)
@@ -18,6 +21,6 @@ typedef struct {
 
 ITER_DEFS(String, char)
 
-#include "aeolus/string/common.h"
+#include "aeolus/shared/string.h"
 
 #endif

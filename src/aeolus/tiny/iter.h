@@ -15,7 +15,10 @@
 #ifndef TINY_ITER_H
 #define TINY_ITER_H
 
-#include "aeolus/iter/common.h"
+extern const char _aeolus_variant_tiny;
+static __attribute__((used, retain)) const char* _aeolus_check_iter = &_aeolus_variant_tiny;
+
+#include "aeolus/shared/iter.h"
 
 #define iter_curr(ITERABLE, SELF)    ITER_CURR_FUNC_NAME(ITERABLE)(SELF)
 #define iter_begin(ITERABLE, SELF)   ITER_BEGIN_FUNC_NAME(ITERABLE)(SELF)

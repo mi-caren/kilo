@@ -18,14 +18,18 @@
 #ifndef VEC_H
 #define VEC_H
 
+/* Link-time guard: forces the linker to pull _aeolus_variant_full from
+ * the full library. If linked against libaeolus_tiny.a instead, this
+ * produces an "undefined reference" error. */
+extern const char _aeolus_variant_full;
+static __attribute__((used, retain)) const char* _aeolus_check_vec = &_aeolus_variant_full;
+
 #include <stdbool.h>
 #include <stdlib.h>
 
 #include "aeolus/utils.h"
-#include "aeolus/iter/iter.h"
-#include "aeolus/vec/common.h"
-
-#define Vec(TYPE) GenericName(TYPE, Vec)
+#include "aeolus/iter.h"
+#include "aeolus/shared/vec.h"
 
 #define VEC_STRUCT_DEF(TYPE)\
     typedef struct {\
@@ -91,12 +95,12 @@
 #define vec_free(SELF)                (SELF)->drv->free(SELF)
 
 #define VEC_DEFS(TYPE)\
-    VEC_DEFS_COMMON(TYPE)\
+    VEC_DEFS_SHARED(TYPE)\
     VEC_DRIVER_DEF(TYPE);\
     ITER_DEFS(Vec(TYPE), TYPE)\
 
 #define VEC_IMPL(TYPE)\
-    VEC_IMPL_COMMON(TYPE)\
+    VEC_IMPL_SHARED(TYPE)\
     VEC_ITER_IMPL(TYPE)\
     VEC_INIT_FUNC_IMPL(TYPE)\
 

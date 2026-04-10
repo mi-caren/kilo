@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "vvec.h"
+#include "aeolus/full/vvec.h"
 
 
 #define VVECHEAD(VEC)    ((VoidVecHeader*)((char*)VEC - sizeof(VoidVecHeader)))

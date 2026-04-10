@@ -5,7 +5,9 @@
 #include "aeolus/tiny/string.h"
 #include "aeolus/tiny/vec.h"
 
-#include "aeolus/string/common_impl.h"
+#include "aeolus/shared/string_impl.h"
+
+__attribute__((weak)) const char _aeolus_variant_tiny = 0;
 
 String str_new_with_cap(size_t initial_size) {
     if (initial_size < 2) initial_size = 2;

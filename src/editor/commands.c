@@ -19,10 +19,10 @@
 #include "editor/defs.h"
 #include "editor/utils.h"
 #include "editor/search.h"
-#include "aeolus/iter/iter.h"
+#include "aeolus/iter.h"
 #include "aeolus/result.h"
-#include "aeolus/string/string.h"
-#include "aeolus/vec/vec.h"
+#include "aeolus/string.h"
+#include "aeolus/vec.h"
 #include "editor/commands.h"
 
 extern struct Editor editor;

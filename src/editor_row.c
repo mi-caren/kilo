@@ -6,12 +6,12 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "aeolus/iter/iter.h"
+#include "aeolus/iter.h"
 #include "editing_point.h"
 #include "editor/defs.h"
 #include "editor/utils.h"
-#include "aeolus/string/string.h"
-#include "aeolus/vec/vec.h"
+#include "aeolus/string.h"
+#include "aeolus/vec.h"
 #include "editor_row.h"
 #include "editor/utils.h"
 

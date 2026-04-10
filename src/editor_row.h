@@ -4,8 +4,8 @@
 #include <unistd.h>
 #include "aeolus/utils.h"
 #include "editing_point.h"
-#include "aeolus/string/string.h"
-#include "aeolus/vec/vec.h"
+#include "aeolus/string.h"
+#include "aeolus/vec.h"
 
 
 typedef enum {

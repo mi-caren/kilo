@@ -4,7 +4,17 @@
  * VecDriver function pointer table. Requires TYPE as the first
  * argument to all dispatch macros.
  *
- * The struct has no driver pointer, making it smaller than Vec. */
+ * The struct has no driver pointer and no iterator driver field,
+ * making it smaller than the full Vec variant. Direct calls allow
+ * the compiler to inline vec operations at -O2/-O3, eliminating
+ * the indirect-call overhead of the vtable.
+ *
+ * Important: compile with -ffunction-sections -fdata-sections and
+ * link with -Wl,--gc-sections. Without these, the compiler keeps
+ * all function bodies with external linkage even when fully inlined,
+ * resulting in a larger binary than the full variant. With gc-sections
+ * the linker strips the unreferenced bodies, producing the smallest
+ * binary. (Tested: 52K tiny+gc vs 59K full+gc at -O3.) */
 
 #ifdef AEOLUS_FULL
 #error "Cannot include tiny aeolus headers alongside full headers"
@@ -14,10 +24,14 @@
 #ifndef TINY_VEC_H
 #define TINY_VEC_H
 
-#include "aeolus/vec/common.h"
-#include "aeolus/tiny/iter.h"
+/* Link-time guard: forces the linker to pull _aeolus_variant_tiny from
+ * the tiny library. If linked against libaeolus.a instead, this
+ * produces an "undefined reference" error. */
+extern const char _aeolus_variant_tiny;
+static __attribute__((used, retain)) const char* _aeolus_check_vec = &_aeolus_variant_tiny;
 
-#define Vec(TYPE) GenericName(TYPE, TinyVec)
+#include "aeolus/shared/vec.h"
+#include "aeolus/tiny/iter.h"
 
 #define VEC_STRUCT_DEF(TYPE)\
     typedef struct {\
@@ -47,11 +61,11 @@
 #define vec_free(TYPE, SELF)                          VEC_FREE_FUNC_NAME(TYPE)(SELF)
 
 #define VEC_DEFS(TYPE)\
-    VEC_DEFS_COMMON(TYPE)\
+    VEC_DEFS_SHARED(TYPE)\
     ITER_DEFS(Vec(TYPE), TYPE)
 
 #define VEC_IMPL(TYPE)\
-    VEC_IMPL_COMMON(TYPE)\
+    VEC_IMPL_SHARED(TYPE)\
     VEC_INIT_FUNC_IMPL(TYPE)\
     VEC_ITER_IMPL(TYPE)\
 

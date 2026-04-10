@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "aeolus/iter/common.h"
+#include "aeolus/shared/iter.h"
+
+#define Vec(TYPE) GenericName(TYPE, Vec)
 
 #define VEC_STRUCT_BASE(TYPE) \
     size_t cap;\
@@ -226,7 +228,7 @@
 
 size_t vec_cap_from_size(size_t size);
 
-#define VEC_DEFS_COMMON(TYPE)\
+#define VEC_DEFS_SHARED(TYPE)\
     VEC_STRUCT_DEF(TYPE);\
     VEC_INIT_FUNC_SIGNATURE(TYPE);\
     VEC_NEW_FUNC_SIGNATURE(TYPE);\
@@ -243,7 +245,7 @@ size_t vec_cap_from_size(size_t size);
     VEC_FREE_FUNC_SIGNATURE(TYPE);\
 
 
-#define VEC_IMPL_COMMON(TYPE)\
+#define VEC_IMPL_SHARED(TYPE)\
     static VEC_REALLOC_FUNC_IMPL(TYPE)\
     static VEC_INIT_BASE_FUNC_IMPL(TYPE)\
     VEC_EMPTY_FUNC_IMPL(TYPE)\

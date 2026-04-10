@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "aeolus/string/string.h"
-#include "aeolus/vec/vec.h"
+#include "aeolus/string.h"
+#include "aeolus/vec.h"
 
-#include "aeolus/string/common_impl.h"
+#include "aeolus/shared/string_impl.h"
+
+__attribute__((weak)) const char _aeolus_variant_full = 0;
 
 String str_new_with_cap(size_t initial_size) {
     if (initial_size < 2) initial_size = 2;

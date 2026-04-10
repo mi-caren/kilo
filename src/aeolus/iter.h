@@ -31,7 +31,10 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
-#include "aeolus/iter/common.h"
+extern const char _aeolus_variant_full;
+static __attribute__((used, retain)) const char* _aeolus_check_iter = &_aeolus_variant_full;
+
+#include "aeolus/shared/iter.h"
 
 #define ITER_DRIVER_DEF(ITERABLE)\
     struct Iterator(ITERABLE) {\

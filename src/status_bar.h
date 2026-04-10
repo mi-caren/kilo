@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include "aeolus/string/string.h"
+#include "aeolus/string.h"
 
 
 void messageBarDraw(String* buf);
