@@ -2,6 +2,9 @@
 #define VEC_FUNCTIONS_H
 
 #include <stdlib.h>
+#include <string.h>
+
+#include "aeolus/iter/common.h"
 
 #define VEC_STRUCT_BASE(TYPE) \
     size_t cap;\
@@ -106,9 +109,21 @@
         return vec;\
     }
 
-#define vec_realloc_fn(TYPE, VEC, SIZE)        VEC_REALLOC_FUNC_NAME(TYPE)(VEC, SIZE)
-#define vec_grow_fn(TYPE, VEC)                 vec_realloc_fn(TYPE, VEC, VEC->cap * 2)
-#define vec_make_space_fn(TYPE, VEC, SPACE)    vec_realloc_fn(TYPE, VEC, vec_cap_from_size(SPACE))
+#define vec_realloc_fn(TYPE, VEC, SIZE)            VEC_REALLOC_FUNC_NAME(TYPE)(VEC, SIZE)
+#define vec_grow_fn(TYPE, VEC)                     vec_realloc_fn(TYPE, VEC, VEC->cap * 2)
+#define vec_make_space_fn(TYPE, VEC, SPACE)        vec_realloc_fn(TYPE, VEC, vec_cap_from_size(SPACE))
+
+#define vec_empty_fn(TYPE, SELF)                   VEC_EMPTY_FUNC_NAME(TYPE)(SELF)
+#define vec_push_fn(TYPE, SELF, EL)                VEC_PUSH_FUNC_NAME(TYPE)(SELF, EL)
+#define vec_repeat_append_fn(TYPE, SELF, EL, N)    VEC_REPEAT_APPEND_FUNC_NAME(TYPE)(SELF, EL, N)
+#define vec_set_fn(TYPE, SELF, VAL, POS)           VEC_SET_FUNC_NAME(TYPE)(SELF, VAL, POS)
+#define vec_get_fn(TYPE, SELF, POS)                VEC_GET_FUNC_NAME(TYPE)(SELF, POS)
+#define vec_insert_fn(TYPE, SELF, EL, POS)         VEC_INSERT_FUNC_NAME(TYPE)(SELF, EL, POS)
+#define vec_remove_fn(TYPE, SELF, POS)             VEC_REMOVE_FUNC_NAME(TYPE)(SELF, POS)
+#define vec_last_fn(TYPE, SELF)                    VEC_LAST_FUNC_NAME(TYPE)(SELF)
+#define vec_first_fn(TYPE, SELF)                   VEC_FIRST_FUNC_NAME(TYPE)(SELF)
+#define vec_pop_fn(TYPE, SELF)                     VEC_POP_FUNC_NAME(TYPE)(SELF)
+#define vec_free_fn(TYPE, SELF)                    VEC_FREE_FUNC_NAME(TYPE)(SELF)
 
 /* ********* vec_set *********** */
 #define VEC_SET_FUNC_NAME(TYPE)            CAT(Vec(TYPE), _set)
@@ -215,6 +230,17 @@ size_t vec_cap_from_size(size_t size);
     VEC_STRUCT_DEF(TYPE);\
     VEC_INIT_FUNC_SIGNATURE(TYPE);\
     VEC_NEW_FUNC_SIGNATURE(TYPE);\
+    VEC_EMPTY_FUNC_SIGNATURE(TYPE);\
+    VEC_PUSH_FUNC_SIGNATURE(TYPE);\
+    VEC_REPEAT_APPEND_FUNC_SIGNATURE(TYPE);\
+    VEC_SET_FUNC_SIGNATURE(TYPE);\
+    VEC_GET_FUNC_SIGNATURE(TYPE);\
+    VEC_INSERT_FUNC_SIGNATURE(TYPE);\
+    VEC_REMOVE_FUNC_SIGNATURE(TYPE);\
+    VEC_LAST_FUNC_SIGNATURE(TYPE);\
+    VEC_FIRST_FUNC_SIGNATURE(TYPE);\
+    VEC_POP_FUNC_SIGNATURE(TYPE);\
+    VEC_FREE_FUNC_SIGNATURE(TYPE);\
 
 
 #define VEC_IMPL_COMMON(TYPE)\
@@ -232,5 +258,34 @@ size_t vec_cap_from_size(size_t size);
     VEC_POP_FUNC_IMPL(TYPE)\
     VEC_FREE_FUNC_IMPL(TYPE)\
     VEC_NEW_FUNC_IMPL(TYPE)\
+
+#define VEC_ITER_IMPL(TYPE)\
+    ITER_IMPL(\
+        Vec(TYPE),\
+        /* CURR_IMPL */ {\
+            if (self->len == 0) return NULL;\
+            if (self->curr >= self->len) return NULL;\
+            return &self->items[self->curr];\
+        },\
+        /* BEGIN_IMPL */ {\
+            self->curr = 0;\
+            return ITER_CURR_FUNC_NAME(Vec(TYPE))(self);\
+        },\
+        /* END_IMPL */ {\
+            if (self->len == 0) return NULL;\
+            self->curr = self->len - 1;\
+            return ITER_CURR_FUNC_NAME(Vec(TYPE))(self);\
+        },\
+        /* PREV_IMPL */ {\
+            if (self->curr == 0) return NULL;\
+            self->curr--;\
+            return ITER_CURR_FUNC_NAME(Vec(TYPE))(self);\
+        },\
+        /* NEXT_IMPL */ {\
+            if (self->curr >= self->len - 1) return NULL;\
+            self->curr++;\
+            return ITER_CURR_FUNC_NAME(Vec(TYPE))(self);\
+        }\
+    )
 
 #endif

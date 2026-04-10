@@ -1,16 +1,30 @@
-#ifndef DVEC_H
-#define DVEC_H
+/* Tiny Vec — generic dynamic array without vtable dispatch.
+ *
+ * Calls vec functions directly by name instead of going through a
+ * VecDriver function pointer table. Requires TYPE as the first
+ * argument to all dispatch macros.
+ *
+ * The struct has no driver pointer, making it smaller than Vec. */
+
+#ifdef AEOLUS_FULL
+#error "Cannot include tiny aeolus headers alongside full headers"
+#endif
+#define AEOLUS_TINY
+
+#ifndef TINY_VEC_H
+#define TINY_VEC_H
 
 #include "aeolus/vec/common.h"
+#include "aeolus/tiny/iter.h"
 
-#define Vec(TYPE) GenericName(TYPE, DirectVec)
+#define Vec(TYPE) GenericName(TYPE, TinyVec)
 
 #define VEC_STRUCT_DEF(TYPE)\
     typedef struct {\
         VEC_STRUCT_BASE(TYPE)\
     } Vec(TYPE)
 
-/* ********* dvec_init *********** */
+/* ********* tiny vec_init *********** */
 #define VEC_INIT_FUNC_IMPL(TYPE)\
     VEC_INIT_FUNC_SIGNATURE(TYPE) {\
         if (vec_init_base(TYPE, vec, initial_size) == NULL)\
@@ -33,10 +47,15 @@
 #define vec_free(TYPE, SELF)                          VEC_FREE_FUNC_NAME(TYPE)(SELF)
 
 #define VEC_DEFS(TYPE)\
-    VEC_DEFS_COMMON(TYPE)
+    VEC_DEFS_COMMON(TYPE)\
+    ITER_DEFS(Vec(TYPE), TYPE)
 
 #define VEC_IMPL(TYPE)\
     VEC_IMPL_COMMON(TYPE)\
     VEC_INIT_FUNC_IMPL(TYPE)\
+    VEC_ITER_IMPL(TYPE)\
+
+VEC_DEFS(char)
+VEC_DEFS(unsigned int)
 
 #endif

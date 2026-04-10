@@ -23,14 +23,15 @@
  * not on a separate iterator struct. This means nested iteration
  * over the same collection is not supported. */
 
+#ifdef AEOLUS_TINY
+#error "Cannot include full aeolus headers alongside tiny headers"
+#endif
+#define AEOLUS_FULL
+
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
-#include "utils.h"
-#include "generics.h"
-
-#define Iterator(ITERABLE)          GenericName(ITERABLE, Iterator)
-#define IterItem(ITERABLE)          CAT(Iterator(ITERABLE), Item)
+#include "aeolus/iter/common.h"
 
 #define ITER_DRIVER_DEF(ITERABLE)\
     struct Iterator(ITERABLE) {\
@@ -53,58 +54,15 @@
     };\
     (IT)->iter = &CAT(Iterator(ITERABLE), _iter)
 
-/* ********* iter_curr *********** */
-#define ITER_CURR_FUNC_NAME(ITERABLE)      CAT(Iterator(ITERABLE), _curr)
-#define ITER_CURR_FUNC_SIGNATURE(ITERABLE) IterItem(ITERABLE)* ITER_CURR_FUNC_NAME(ITERABLE)(ITERABLE* const self)
-#define ITER_CURR_FUNC_IMPL(ITERABLE)\
-    ITER_CURR_FUNC_SIGNATURE(ITERABLE)
-
 #define iter_curr(SELF)                 (SELF)->iter->curr(SELF)
-
-/* ********* iter_begin *********** */
-#define ITER_BEGIN_FUNC_NAME(ITERABLE)       CAT(Iterator(ITERABLE), _begin)
-#define ITER_BEGIN_FUNC_SIGNATURE(ITERABLE)  IterItem(ITERABLE)* ITER_BEGIN_FUNC_NAME(ITERABLE)(ITERABLE* const self)
-#define ITER_BEGIN_FUNC_IMPL(ITERABLE)\
-    ITER_BEGIN_FUNC_SIGNATURE(ITERABLE)
-
-#define iter_begin(SELF)           (SELF)->iter->begin(SELF)
-
-/* ********* iter_end *********** */
-#define ITER_END_FUNC_NAME(ITERABLE)       CAT(Iterator(ITERABLE), _end)
-#define ITER_END_FUNC_SIGNATURE(ITERABLE)  IterItem(ITERABLE)* ITER_END_FUNC_NAME(ITERABLE)(ITERABLE* const self)
-#define ITER_END_FUNC_IMPL(ITERABLE)\
-    ITER_END_FUNC_SIGNATURE(ITERABLE)
-
-#define iter_end(SELF)           (SELF)->iter->end(SELF)
-
-/* ********* iter_prev *********** */
-#define ITER_PREV_FUNC_NAME(ITERABLE)       CAT(Iterator(ITERABLE), _prev)
-#define ITER_PREV_FUNC_SIGNATURE(ITERABLE)  IterItem(ITERABLE)* ITER_PREV_FUNC_NAME(ITERABLE)(ITERABLE* const self)
-#define ITER_PREV_FUNC_IMPL(ITERABLE)\
-    ITER_PREV_FUNC_SIGNATURE(ITERABLE)
-
-#define iter_prev(SELF)           (SELF)->iter->prev(SELF)
-
-/* ********* iter_next *********** */
-#define ITER_NEXT_FUNC_NAME(ITERABLE)       CAT(Iterator(ITERABLE), _next)
-#define ITER_NEXT_FUNC_SIGNATURE(ITERABLE)  IterItem(ITERABLE)* ITER_NEXT_FUNC_NAME(ITERABLE)(ITERABLE* const self)
-#define ITER_NEXT_FUNC_IMPL(ITERABLE)\
-    ITER_NEXT_FUNC_SIGNATURE(ITERABLE)
-
-#define iter_next(SELF)           (SELF)->iter->next(SELF)
-
+#define iter_begin(SELF)                (SELF)->iter->begin(SELF)
+#define iter_end(SELF)                  (SELF)->iter->end(SELF)
+#define iter_prev(SELF)                 (SELF)->iter->prev(SELF)
+#define iter_next(SELF)                 (SELF)->iter->next(SELF)
 
 #define ITER_DEFS(ITERABLE, TYPE)\
     typedef TYPE IterItem(ITERABLE);\
     ITER_DRIVER_DEF(ITERABLE);\
-
-#define ITER_IMPL(ITERABLE, CURR_IMPL, BEGIN_IMPL, END_IMPL, PREV_IMPL, NEXT_IMPL)\
-    ITER_CURR_FUNC_IMPL(ITERABLE)  CURR_IMPL\
-    ITER_BEGIN_FUNC_IMPL(ITERABLE) BEGIN_IMPL\
-    ITER_END_FUNC_IMPL(ITERABLE)   END_IMPL\
-    ITER_PREV_FUNC_IMPL(ITERABLE)  PREV_IMPL\
-    ITER_NEXT_FUNC_IMPL(ITERABLE)  NEXT_IMPL\
-
 
 #define EACH(EL, IT) \
     auto EL = iter_begin(IT); EL != NULL; EL = iter_next(IT)

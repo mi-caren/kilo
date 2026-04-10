@@ -15,9 +15,13 @@ OBJS = $(ROOT_OBJS) $(EDITOR_OBJS)
 # lib aeolus
 AEOLUS_ROOT_SRCS = $(wildcard src/aeolus/*.c)
 AEOLUS_VEC_SRCS = $(wildcard src/aeolus/vec/*.c)
+AEOLUS_STRING_SRCS = $(wildcard src/aeolus/string/*.c)
+AEOLUS_TINY_SRCS = $(wildcard src/aeolus/tiny/*.c)
 AEOLUS_ROOT_OBJS = $(patsubst src/aeolus/%.c, build/aeolus_%.o, $(AEOLUS_ROOT_SRCS))
 AEOLUS_VEC_OBJS = $(patsubst src/aeolus/vec/%.c, build/aeolus_vec_%.o, $(AEOLUS_VEC_SRCS))
-AEOLUS_OBJS = $(AEOLUS_ROOT_OBJS) $(AEOLUS_VEC_OBJS)
+AEOLUS_STRING_OBJS = $(patsubst src/aeolus/string/%.c, build/aeolus_string_%.o, $(AEOLUS_STRING_SRCS))
+AEOLUS_TINY_OBJS = $(patsubst src/aeolus/tiny/%.c, build/aeolus_tiny_%.o, $(AEOLUS_TINY_SRCS))
+AEOLUS_OBJS = $(AEOLUS_ROOT_OBJS) $(AEOLUS_VEC_OBJS) $(AEOLUS_STRING_OBJS) $(AEOLUS_TINY_OBJS)
 LIBS = build/libaeolus.a
 
 DEPS = $(OBJS:.o=.d) $(AEOLUS_OBJS:.o=.d)
@@ -50,6 +54,12 @@ build/aeolus_%.o: src/aeolus/%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 build/aeolus_vec_%.o: src/aeolus/vec/%.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+build/aeolus_string_%.o: src/aeolus/string/%.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+build/aeolus_tiny_%.o: src/aeolus/tiny/%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 build/libaeolus.a: $(AEOLUS_OBJS)
